@@ -1,40 +1,33 @@
 import React from 'react';
-import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
+import {Text, SafeAreaView, StatusBar, useColorScheme} from 'react-native';
 
-const ws_subscribe_message = {
-  event: 'subscribe',
-  feed: 'book_ui_1',
-  product_ids: ['PI_XBTUSD'],
-};
+import {Provider} from 'react-redux';
+import {useAppSelector} from './hooks';
 
-const ws = new WebSocket('wss://www.cryptofacilities.com/ws/v1');
+import {getValue, store} from './state/store';
 
-ws.onopen = () => {
-  // connection opened
-  ws.send(JSON.stringify(ws_subscribe_message));
-};
+// const subscribeMessage = {
+//   event: 'subscribe',
+//   feed: 'book_ui_1',
+//   product_ids: ['PI_XBTUSD'],
+// };
+// const WS_SUBSCRIBE_MESSAGE = JSON.stringify(subscribeMessage);
+// const WS_URL = 'wss://www.cryptofacilities.com/ws/v1';
 
-ws.onmessage = e => {
-  // a message was received
-  console.log(e.data);
-};
-
-ws.onerror = e => {
-  // an error occurred
-  console.log(e.message);
-};
-
-ws.onclose = e => {
-  // connection closed
-  console.log(e.code, e.reason);
+const Orderbook = () => {
+  const value = useAppSelector(getValue);
+  return <Text>{value}</Text>;
 };
 
 export const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <SafeAreaView>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-    </SafeAreaView>
+    <Provider store={store}>
+      <SafeAreaView>
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+        <Orderbook />
+      </SafeAreaView>
+    </Provider>
   );
 };
