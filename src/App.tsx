@@ -1,10 +1,18 @@
-import React from 'react';
-import {Text, SafeAreaView, StatusBar, useColorScheme} from 'react-native';
-
+import React, {useEffect} from 'react';
+import {
+  Text,
+  SafeAreaView,
+  StatusBar,
+  useColorScheme,
+  Button,
+} from 'react-native';
 import {Provider} from 'react-redux';
-import {useAppSelector} from './hooks';
+import {connect} from '@giantmachines/redux-websocket';
 
-import {getValue, store} from './state/store';
+import {useAppDispatch, useAppSelector} from './hooks';
+
+import {store} from './state/store';
+import {getValue} from './state/feed/selectors';
 
 // const subscribeMessage = {
 //   event: 'subscribe',
@@ -12,11 +20,23 @@ import {getValue, store} from './state/store';
 //   product_ids: ['PI_XBTUSD'],
 // };
 // const WS_SUBSCRIBE_MESSAGE = JSON.stringify(subscribeMessage);
-// const WS_URL = 'wss://www.cryptofacilities.com/ws/v1';
+const WS_URL = 'wss://www.cryptofacilities.com/ws/v1';
 
 const Orderbook = () => {
   const value = useAppSelector(getValue);
-  return <Text>{value}</Text>;
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(connect(WS_URL));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <>
+      <Text>{value}</Text>
+      <Button onPress={() => undefined} title="toggle" />
+    </>
+  );
 };
 
 export const App = () => {
