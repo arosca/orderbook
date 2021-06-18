@@ -1,6 +1,5 @@
-// buy - verde - bid
-// sell - rosu - ask
 import React, {useEffect} from 'react';
+import styled from 'styled-components/native';
 import {
   Text,
   SafeAreaView,
@@ -28,6 +27,13 @@ const unsubscribeMessage = {
 };
 const WS_URL = 'wss://www.cryptofacilities.com/ws/v1';
 
+const Container = styled.View`
+  flex-direction: row;
+`;
+const Panel = styled.View`
+  flex: 1;
+`;
+
 const Row = ({data}: {data: number[]}) => {
   return (
     <Text>
@@ -45,23 +51,29 @@ const Orderbook = () => {
     setTimeout(() => {
       dispatch(send(subscribeMessage));
     }, 3000);
-    dispatch(connect(WS_URL));
+
     setTimeout(() => {
       dispatch(send(unsubscribeMessage));
-    }, 5000);
+    }, 4000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <ScrollView>
-      <Text>Asks / Sell / Rosu</Text>
-      {data?.asks?.map((data, index) => (
-        <Row key={`asks-${index}`} data={data} />
-      ))}
-      <Text>Bids / Buy / Verde</Text>
-      {data?.bids?.map((data, index) => (
-        <Row key={`bids-${index}`} data={data} />
-      ))}
+      <Container>
+        <Panel>
+          <Text>Asks / Sell / Rosu</Text>
+          {data?.asks?.map((data, index) => (
+            <Row key={`asks-${index}`} data={data} />
+          ))}
+        </Panel>
+        <Panel>
+          <Text>Bids / Buy / Verde</Text>
+          {data?.bids?.map((data, index) => (
+            <Row key={`bids-${index}`} data={data} />
+          ))}
+        </Panel>
+      </Container>
     </ScrollView>
   );
 };
@@ -70,11 +82,11 @@ export const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <Provider store={store}>
-      <SafeAreaView>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+    <SafeAreaView>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <Provider store={store}>
         <Orderbook />
-      </SafeAreaView>
-    </Provider>
+      </Provider>
+    </SafeAreaView>
   );
 };
